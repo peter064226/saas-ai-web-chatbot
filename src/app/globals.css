@@ -46,6 +46,10 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  --color-orange: #ffa947;
+  --color-iridium: #606060;
+  --color-platinum: #E5E4E2;
+  
 }
 
 :root {
@@ -124,9 +128,9 @@
   body {
     @apply bg-background text-foreground;
   }
-  html {
+  /* html {
     @apply font-sans;
-  }
+  } */
 }
 
 

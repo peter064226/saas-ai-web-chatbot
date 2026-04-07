@@ -1,9 +1,13 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { strict } from "assert";
 import { ErrorMessage } from "@hookform/error-message";
 import React from "react";
-import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
+import {
+  FieldErrors,
+  FieldValues,
+  UseFormRegister,
+  useFormState,
+} from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
 
 type Props = {
@@ -33,6 +37,9 @@ const FormGenerator = ({
   lines,
   options,
 }: Props) => {
+  const { touchedFields } = useFormState();
+  const isTouched = !!touchedFields[name];
+
   switch (inputType) {
     case "input":
     default:
@@ -47,15 +54,17 @@ const FormGenerator = ({
             defaultValue={defaultValue}
             {...register(name)}
           />
-          <ErrorMessage
-            errors={errors}
-            name={name}
-            render={({ message }) => (
-              <p className="text-red-400 mt-2">
-                {message === "Required" ? "" : message}
-              </p>
-            )}
-          />
+          {isTouched && (
+            <ErrorMessage
+              errors={errors}
+              name={name}
+              render={({ message }) => (
+                <p className="text-red-400 mt-2">
+                  {message === "Required" ? "" : message}
+                </p>
+              )}
+            />
+          )}
         </Label>
       );
     case "select":
@@ -70,15 +79,17 @@ const FormGenerator = ({
                 </option>
               ))}
           </select>
-          <ErrorMessage
-            errors={errors}
-            name={name}
-            render={({ message }) => (
-              <p className="text-red-400 mt-2">
-                {message === "Required" ? "" : message}
-              </p>
-            )}
-          />
+          {isTouched && (
+            <ErrorMessage
+              errors={errors}
+              name={name}
+              render={({ message }) => (
+                <p className="text-red-400 mt-2">
+                  {message === "Required" ? "" : message}
+                </p>
+              )}
+            />
+          )}
         </Label>
       );
     case "textarea":
@@ -93,18 +104,19 @@ const FormGenerator = ({
             rows={lines}
             defaultValue={defaultValue}
           />
-          <ErrorMessage
-            errors={errors}
-            name={name}
-            render={({ message }) => (
-              <p className="text-red-400 mt-2">
-                {message === "Required" ? "" : message}
-              </p>
-            )}
-          />
+          {isTouched && (
+            <ErrorMessage
+              errors={errors}
+              name={name}
+              render={({ message }) => (
+                <p className="text-red-400 mt-2">
+                  {message === "Required" ? "" : message}
+                </p>
+              )}
+            />
+          )}
         </Label>
       );
-      defualt: return <></>;
   }
 };
 
