@@ -35,6 +35,7 @@ export const useSignUpForm = () => {
     onNext: React.Dispatch<React.SetStateAction<number>>,
   ) => {
     if (!isLoaded) return;
+    setLoading(true);
 
     try {
       await signUp.create({
@@ -43,9 +44,10 @@ export const useSignUpForm = () => {
       });
 
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
-
+      setLoading(false);
       onNext((prev) => prev + 1);
     } catch (error: any) {
+      setLoading(false);
       toast("Error", {
         description: error.errors[0].longMessage,
       });
@@ -91,6 +93,7 @@ export const useSignUpForm = () => {
           }
         }
       } catch (error: any) {
+        setLoading(false);
         toast("Error", {
           description: error.errors[0].longMessage,
         });

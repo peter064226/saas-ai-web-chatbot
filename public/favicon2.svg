@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="192" height="192">
+  <!-- 蓝色圆角背景方块 -->
+  <rect x="2" y="2" width="124" height="124" rx="24" fill="#1976ed"/>
+  <!-- 机器人头部主体 -->
+  <rect x="18" y="44" width="92" height="62" rx="14" fill="#ffffff"/>
+  <!-- 左右侧边耳结构 -->
+  <rect x="12" y="54" width="8" height="24" rx="4" fill="#ffffff"/>
+  <rect x="108" y="54" width="8" height="24" rx="4" fill="#ffffff"/>
+  <!-- 天线底座+竖杆+顶端圆点 -->
+  <rect x="61" y="24" width="6" height="20" fill="#ffffff"/>
+  <circle cx="64" cy="22" r="6" fill="#ffffff"/>
+  <!-- 双眼 -->
+  <circle cx="44" cy="75" r="8" fill="#222222"/>
+  <circle cx="84" cy="75" r="8" fill="#222222"/>
+</svg>
