@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="340" height="120" viewBox="0 0 340 120">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF8A00"/>
+      <stop offset="100%" stop-color="#FFB347"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Stylized C with antenna -->
+  <g transform="translate(10,10)">
+    <path d="M60 20
+             A30 30 0 1 0 60 80"
+          fill="none" stroke="url(#grad)" stroke-width="12" stroke-linecap="round"/>
+    <line x1="60" y1="20" x2="75" y2="5"
+          stroke="url(#grad)" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="75" cy="5" r="6" fill="url(#grad)"/>
+  </g>
+
+  <!-- Text: Xinghua AI -->
+  <text x="110" y="75"
+        font-family="Arial, sans-serif"
+        font-size="44"
+        font-weight="bold"
+        fill="url(#grad)">
+    Xinghua AI
+  </text>
+</svg>
