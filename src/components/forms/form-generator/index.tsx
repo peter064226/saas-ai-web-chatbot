@@ -6,7 +6,7 @@ import {
   FieldErrors,
   FieldValues,
   UseFormRegister,
-  useFormState,
+  useFormContext,
 } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -37,8 +37,11 @@ const FormGenerator = ({
   lines,
   options,
 }: Props) => {
-  const { touchedFields } = useFormState();
-  const isTouched = !!touchedFields[name];
+  // useFormContext returns null when used outside a FormProvider
+  const formContext = useFormContext();
+  const isTouched = formContext
+    ? !!formContext.formState.touchedFields[name]
+    : true; // outside FormProvider, always show errors (e.g. settings page)
 
   switch (inputType) {
     case "input":
