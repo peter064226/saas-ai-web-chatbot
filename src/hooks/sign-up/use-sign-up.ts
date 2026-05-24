@@ -81,8 +81,6 @@ export const useSignUpForm = () => {
             await setActive({
               session: completeSignUp.createdSessionId,
             });
-
-            setLoading(false);
             router.push("/dashboard");
           }
 
@@ -93,10 +91,11 @@ export const useSignUpForm = () => {
           }
         }
       } catch (error: any) {
-        setLoading(false);
         toast("Error", {
           description: error.errors[0].longMessage,
         });
+      } finally {
+        setLoading(false);
       }
     },
   );

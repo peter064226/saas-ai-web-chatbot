@@ -10,14 +10,14 @@ type Props = {
 };
 
 const SignInFormProvider = ({ children }: Props) => {
-  const { methods, onHandleSubmit, loading } = useSignInForm();
+  const { methods, onHandleSubmit } = useSignInForm();
 
   return (
     <AuthContextProvider>
       <FormProvider {...methods}>
         <form onSubmit={onHandleSubmit} className="h-full">
           <div className="flex flex-col justify-between gap-3 h-full">
-            <Loader loading={loading}>{children}</Loader>
+            {children}
           </div>
         </form>
       </FormProvider>

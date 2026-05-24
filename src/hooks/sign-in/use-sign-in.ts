@@ -32,18 +32,16 @@ export const useSignInForm = () => {
             description: "Welcome back!",
           });
           router.push("/dashboard");
-        }
-      } catch (error: any) {
-        const code = error?.errors?.[0]?.code;
-        if (code === "form_password_incorrect") {
-          toast.error("Error", {
-            description: "Email or password is incorrect, try again",
-          });
         } else {
           toast.error("Error", {
-            description: "Something went wrong, please try again",
+            description: result.status,
           });
         }
+      } catch (error: any) {
+        const message = error?.errors?.[0]?.message;
+        toast.error("Error", {
+          description: message,
+        });
       } finally {
         setLoading(false);
       }

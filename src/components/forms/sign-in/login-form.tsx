@@ -3,6 +3,10 @@ import React from "react";
 import { useFormContext } from "react-hook-form";
 import FormGenerator from "../form-generator";
 import { USER_LOGIN_FORM } from "@/constants/forms";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import Link from "next/link";
+import { useSignInForm } from "@/hooks/sign-in/use-sign-in";
 
 type Props = {};
 
@@ -11,6 +15,8 @@ const LoginForm = (props: Props) => {
     register,
     formState: { errors },
   } = useFormContext();
+  const { loading } = useSignInForm();
+
   return (
     <>
       <h2 className="text-gravel md:text-4xl font-bold">Login</h2>
@@ -26,6 +32,18 @@ const LoginForm = (props: Props) => {
           name={field.name}
         />
       ))}
+      <div className="w-full flex flex-col gap-3 items-center">
+        <Button type="submit" className="w-full">
+          {loading && <Spinner data-icon="inline-start" />}
+          Submit
+        </Button>
+        <p>
+          Don't have an account?{" "}
+          <Link href="/auth/sign-up" className="font-bold">
+            Create one
+          </Link>
+        </p>
+      </div>
     </>
   );
 };
