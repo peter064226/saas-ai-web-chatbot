@@ -7,6 +7,7 @@ import IntegrationsIcon from "@/icons/integrations-icon";
 import SettingsIcon from "@/icons/settings-icon";
 import StarIcon from "@/icons/star-icon";
 import TimerIcon from "@/icons/timer-icon";
+import { JSX } from "react/jsx-runtime";
 
 type SIDE_BAR_MENU_PROPS = {
   label: string;

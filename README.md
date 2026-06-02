@@ -5,6 +5,18 @@ pusher
 stripe
 uploadcare
 
+## Challenges
+
+1. when click login submit , result.status === "needs_second_factor"
+https://stackoverflow.com/questions/79885531/expo-and-clerk-needs-second-factor
+I'm sure second factor for sign in is disabled, but when I try to sign in (something usual when I change device or environment) I get needs_second_factor.
+
+The code you posted needs to handle second factors in order to support the client trust feature, which is critical for preventing credential stuffing attacks. You could turn off this feature in your Clerk dashboard (not recommended as it's a security risk), or update your auth code to support second factor.
+
+Docs with a full code example on second factor handling are right here!
+
+
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
