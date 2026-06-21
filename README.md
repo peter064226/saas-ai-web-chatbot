@@ -1,5 +1,5 @@
 ## third party
-clerk
+clerk: https://dashboard.clerk.com/
 neon
 pusher
 stripe
@@ -14,6 +14,18 @@ I'm sure second factor for sign in is disabled, but when I try to sign in (somet
 The code you posted needs to handle second factors in order to support the client trust feature, which is critical for preventing credential stuffing attacks. You could turn off this feature in your Clerk dashboard (not recommended as it's a security risk), or update your auth code to support second factor.
 
 Docs with a full code example on second factor handling are right here!
+
+2.  A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+               <html  lang="en" className="geist_a71539c9-module__T19VSG__variable geist_mono_8d43a2aa-module__8Li5zG__varia..."
+                   style={{color-scheme:"light"}}  
+                  >  
+            ...  
+    This is a classic next-themes hydration mismatch. The server renders the <html> tag without knowing the user's theme preference, but next-themes adds style={{color-scheme:"light"}} on the client, causing a mismatch.
+
+    The fix is to add suppressHydrationWarning to the <html> tag:
+    https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app
+    Note! If you do not add suppressHydrationWarning to your <html> you will get warnings because next-themes updates that element. This property only applies one level deep, so it won't block hydration warnings on other elements.
+
 
 
 
