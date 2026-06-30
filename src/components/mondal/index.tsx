@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { ArrowBigLeftIcon, ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
+import { getUploadcareUrl } from "@/lib/uploadcare";
 
 type Props = {
   trigger: React.ReactNode;
@@ -36,7 +37,7 @@ const Modal = ({
             <div className="flex justify-center gap-3">
               <div className="w-12 h-12 relative">
                 <Image
-                  src={`https://ucarecdn.com/2c9bd4ab-1f00-41df-bad2-df668f65a232/`}
+                  src={getUploadcareUrl("2c9bd4ab-1f00-41df-bad2-df668f65a232")}
                   fill
                   alt="Xinghua"
                 />
@@ -46,11 +47,7 @@ const Modal = ({
                 <ArrowRight size={20} />
               </div>
               <div className="w-12 h-12 relative">
-                <Image
-                  src={`https://ucarecdn.com/${logo}/`}
-                  fill
-                  alt="Stripe"
-                />
+                <Image src={getUploadcareUrl(logo)} fill alt="Stripe" />
               </div>
             </div>
             <DialogHeader className="flex items-center">

@@ -1,8 +1,15 @@
+## command 
+postgres: docker run --name postgres -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -d postgres:16
+shadcn: npx shadcn@latest add separator
+prisma: npx prisma db push
+    npx prisma studio
+
 ## third party
 clerk: https://dashboard.clerk.com/
+prisma: https://www.prisma.io/docs/guides/frameworks/nextjs
 neon
 pusher
-stripe
+stripe: https://dashboard.stripe.com/
 uploadcare
 
 ## Challenges
