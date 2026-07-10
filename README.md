@@ -7,8 +7,9 @@ prisma: npx prisma db push
 ## third party
 clerk: https://dashboard.clerk.com/
 prisma: https://www.prisma.io/docs/guides/frameworks/nextjs
+openai: https://platform.openai.com/home
 neon
-pusher
+pusher: https://dashboard.pusher.com/apps/2177525/getting_started
 stripe: https://dashboard.stripe.com/
 uploadcare
 
