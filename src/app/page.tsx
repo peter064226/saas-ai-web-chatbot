@@ -1,6 +1,7 @@
 import { onGetBlogPosts } from "@/actions/landing";
 import NavBar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
+import Script from "next/script";
 import {
   Card,
   CardContent,
@@ -132,6 +133,36 @@ export default async function Home() {
             </Link>
           ))}
       </section>
+      <Script id="chatbot-embed" strategy="afterInteractive">{`
+  const iframe = document.createElement("iframe");
+
+  const iframeStyles = (styleString) => {
+    const style = document.createElement('style');
+    style.textContent = styleString;
+    document.head.append(style);
+  }
+
+  iframeStyles(\`
+    .chat-frame {
+      position: fixed;
+      bottom: 50px;
+      right: 50px;
+      border: none;
+    }
+  \`);
+
+  iframe.src = "http://localhost:3000/chatbot";
+  iframe.classList.add('chat-frame');
+  document.body.appendChild(iframe);
+
+  window.addEventListener("message", (e) => {
+    if (e.origin !== "http://localhost:3000") return null;
+    let dimensions = JSON.parse(e.data);
+    iframe.width = dimensions.width;
+    iframe.height = dimensions.height;
+    iframe.contentWindow.postMessage("40ee73c2-c36a-40bd-a322-57f013033871", "http://localhost:3000/");
+  });
+`}</Script>
     </main>
   );
 }

@@ -8,7 +8,8 @@ import OpenAi from "openai";
 import { clerkClient } from "@clerk/nextjs/server";
 
 const openai = new OpenAi({
-  apiKey: process.env.OPEN_AI_KEY,
+  apiKey: process.env.OPENAI_API_KEY,
+  baseURL: process.env.OPENAI_BASE_URL,
 });
 
 export const onStoreConversations = async (
@@ -339,26 +340,31 @@ export const onAiChatBotAssistant = async (
         }
       }
       console.log("No customer");
-      const chatCompletion = await openai.chat.completions.create({
-        messages: [
-          {
-            role: "assistant",
-            content: `
+      const chatCompletion = await openai.chat.completions.create(
+        {
+          messages: [
+            {
+              role: "assistant",
+              content: `
             You are a highly knowledgeable and experienced sales representative for a ${chatBotDomain.name} that offers a valuable product or service. Your goal is to have a natural, human-like conversation with the customer in order to understand their needs, provide relevant information, and ultimately guide them towards making a purchase or redirect them to a link if they havent provided all relevant information.
             Right now you are talking to a customer for the first time. Start by giving them a warm welcome on behalf of ${chatBotDomain.name} and make them feel welcomed.
 
             Your next task is lead the conversation naturally to get the customers email address. Be respectful and never break character
 
           `,
-          },
-          ...chat,
-          {
-            role: "user",
-            content: message,
-          },
-        ],
-        model: "gpt-3.5-turbo",
-      });
+            },
+            ...chat,
+            {
+              role: "user",
+              content: message,
+            },
+          ],
+          model: "gpt-3.5-turbo",
+        },
+        {
+          stream: true,
+        },
+      );
 
       if (chatCompletion) {
         const response = {

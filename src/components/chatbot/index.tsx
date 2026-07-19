@@ -1,12 +1,12 @@
-'use client'
-import { useChatBot } from '@/hooks/chatbot/use-chatbot'
-import React from 'react'
-import { BotWindow } from './window'
-import { cn } from '@/lib/utils'
-import Image from 'next/image'
-import { BotIcon } from '@/icons/bot-icon'
+"use client";
+import { useChatBot } from "@/hooks/chatbot/use-chatbot";
+import React from "react";
+import { BotWindow } from "./window";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
+import { BotIcon } from "@/icons/bot-icon";
 
-type Props = {}
+type Props = {};
 
 const AiChatBot = (props: Props) => {
   const {
@@ -22,7 +22,7 @@ const AiChatBot = (props: Props) => {
     onRealTime,
     setOnChats,
     errors,
-  } = useChatBot()
+  } = useChatBot();
 
   return (
     <div className="h-screen flex flex-col justify-end items-end gap-4">
@@ -45,8 +45,8 @@ const AiChatBot = (props: Props) => {
       )}
       <div
         className={cn(
-          'rounded-full relative cursor-pointer shadow-md w-20 h-20 flex items-center justify-center bg-grandis',
-          loading ? 'invisible' : 'visible'
+          "rounded-full relative cursor-pointer shadow-md w-20 h-20 flex items-center justify-center bg-grandis",
+          loading ? "invisible" : "visible",
         )}
         onClick={onOpenChatBot}
       >
@@ -61,7 +61,7 @@ const AiChatBot = (props: Props) => {
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AiChatBot
+export default AiChatBot;
