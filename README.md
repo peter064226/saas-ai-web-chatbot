@@ -12,6 +12,7 @@ neon
 pusher: https://dashboard.pusher.com/apps/2177525/getting_started
 stripe: https://dashboard.stripe.com/
 uploadcare
+groq: https://console.groq.com/settings/limits
 
 ## Challenges
 

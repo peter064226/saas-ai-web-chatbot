@@ -22,8 +22,8 @@ import UploadButton from "../upload-button";
 type Props = {
   errors: any;
   register: UseFormRegister<ChatBotMessageProps>;
-  chats: { role: "assistant" | "user"; content: string; link?: string }[];
-  onChat(): void;
+  messages: { role: "assistant" | "user"; content: string; link?: string }[];
+  sendMessage(): void;
   onResponding: boolean;
   domainName: string;
   theme?: string | null;
@@ -57,8 +57,8 @@ export const BotWindow = forwardRef<HTMLDivElement, Props>(
     {
       errors,
       register,
-      chats,
-      onChat,
+      messages: chats,
+      sendMessage: onChat,
       onResponding,
       domainName,
       helpdesk,

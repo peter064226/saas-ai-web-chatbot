@@ -10,11 +10,7 @@ export type ConversationSearchProps = z.infer<typeof ConversationSearchSchema>;
 
 export const ChatBotMessageSchema = z
   .object({
-    content: z
-      .string()
-      .min(1)
-      .optional()
-      .or(z.literal("").transform(() => undefined)),
+    content: z.string().min(1),
     image: z.any().optional(),
   })
   .refine((schema) => {

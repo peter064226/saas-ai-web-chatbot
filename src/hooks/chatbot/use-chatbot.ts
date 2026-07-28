@@ -48,7 +48,7 @@ export const useChatBot = () => {
   const [botOpened, setBotOpened] = useState<boolean>(false);
   const onOpenChatBot = () => setBotOpened((prev) => !prev);
   const [loading, setLoading] = useState<boolean>(true);
-  const [onChats, setOnChats] = useState<
+  const [messages, setMessages] = useState<
     { role: "assistant" | "user"; content: string; link?: string }[]
   >([]);
   const [onAiTyping, setOnAiTyping] = useState<boolean>(false);
@@ -67,7 +67,7 @@ export const useChatBot = () => {
 
   useEffect(() => {
     onScrollToBottom();
-  }, [onChats, messageWindowRef]);
+  }, [messages, messageWindowRef]);
 
   useEffect(() => {
     postToParent(
@@ -84,7 +84,7 @@ export const useChatBot = () => {
     setCurrentBotId(id);
     const chatbot = await onGetCurrentChatBot(id);
     if (chatbot) {
-      setOnChats((prev) => [
+      setMessages((prev) => [
         ...prev,
         {
           role: "assistant",
@@ -107,14 +107,14 @@ export const useChatBot = () => {
     });
   }, []);
 
-  const onStartChatting = handleSubmit(async (values) => {
+  const sendMessage = handleSubmit(async (values) => {
     console.log("ALL VALUES", values);
 
     if (values.image.length) {
       console.log("IMAGE fROM ", values.image[0]);
       const uploaded = await upload.uploadFile(values.image[0]);
       if (!onRealTime?.mode) {
-        setOnChats((prev: any) => [
+        setMessages((prev: any) => [
           ...prev,
           {
             role: "user",
@@ -127,7 +127,7 @@ export const useChatBot = () => {
       setOnAiTyping(true);
       const response = await onAiChatBotAssistant(
         currentBotId!,
-        onChats,
+        messages,
         "user",
         uploaded.uuid,
       );
@@ -141,7 +141,7 @@ export const useChatBot = () => {
             mode: response.live,
           }));
         } else {
-          setOnChats((prev: any) => [...prev, response.response]);
+          setMessages((prev: any) => [...prev, response.response]);
         }
       }
     }
@@ -149,7 +149,7 @@ export const useChatBot = () => {
 
     if (values.content) {
       if (!onRealTime?.mode) {
-        setOnChats((prev: any) => [
+        setMessages((prev: any) => [
           ...prev,
           {
             role: "user",
@@ -162,7 +162,7 @@ export const useChatBot = () => {
 
       const response = await onAiChatBotAssistant(
         currentBotId!,
-        onChats,
+        messages,
         "user",
         values.content,
       );
@@ -176,7 +176,7 @@ export const useChatBot = () => {
             mode: response.live,
           }));
         } else {
-          setOnChats((prev: any) => [...prev, response.response]);
+          setMessages((prev: any) => [...prev, response.response]);
         }
       }
     }
@@ -185,14 +185,14 @@ export const useChatBot = () => {
   return {
     botOpened,
     onOpenChatBot,
-    onStartChatting,
-    onChats,
+    sendMessage,
+    messages,
     register,
     onAiTyping,
     messageWindowRef,
     currentBot,
     loading,
-    setOnChats,
+    setMessages,
     onRealTime,
     errors,
   };

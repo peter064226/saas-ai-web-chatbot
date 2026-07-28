@@ -154,20 +154,20 @@ export const useChatWindow = () => {
   const onHandleSentMessage = handleSubmit(async (values) => {
     try {
       reset();
-      const message = await onOwnerSendMessage(
+      const latestMessage = await onOwnerSendMessage(
         chatRoom!,
-        values.content || "",
+        values.content,
         "assistant",
       );
       //WIP: Remove this line
-      if (message) {
+      if (latestMessage) {
         //remove this
         // setChats((prev) => [...prev, message.message[0]])
 
         await onRealTimeChat(
           chatRoom!,
-          message.message[0].message,
-          message.message[0].id,
+          latestMessage.message[0].message,
+          latestMessage.message[0].id,
           "assistant",
         );
       }

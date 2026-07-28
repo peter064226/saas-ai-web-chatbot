@@ -2,7 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  reactCompiler: true,
+  // if reactCompiler set to true , reset() will act abnomal
+  // reactCompiler: false,
   images: {
     remotePatterns: [
       {

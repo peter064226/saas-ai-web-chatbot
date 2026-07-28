@@ -157,7 +157,7 @@ export const onOwnerSendMessage = async (
   role: "assistant" | "user",
 ) => {
   try {
-    const chat = await client.chatRoom.update({
+    const latestMessage = await client.chatRoom.update({
       where: {
         id: chatroom,
       },
@@ -186,8 +186,8 @@ export const onOwnerSendMessage = async (
       },
     });
 
-    if (chat) {
-      return chat;
+    if (latestMessage) {
+      return latestMessage;
     }
   } catch (error) {
     console.log(error);

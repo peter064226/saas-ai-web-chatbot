@@ -12,6 +12,8 @@ const openai = new OpenAi({
   baseURL: process.env.OPENAI_BASE_URL,
 });
 
+const model = process.env.OPENAI_API_MODEL || "gpt-3.5-turbo";
+
 export const onStoreConversations = async (
   id: string,
   message: string,
@@ -246,7 +248,7 @@ export const onAiChatBotAssistant = async (
               content: message,
             },
           ],
-          model: "gpt-3.5-turbo",
+          model,
         });
 
         if (chatCompletion.choices[0].message.content?.includes("(realtime)")) {
@@ -359,7 +361,7 @@ export const onAiChatBotAssistant = async (
               content: message,
             },
           ],
-          model: "gpt-3.5-turbo",
+          model,
         },
         {
           stream: true,

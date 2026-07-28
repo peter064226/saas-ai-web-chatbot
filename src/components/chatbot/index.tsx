@@ -12,15 +12,15 @@ const AiChatBot = (props: Props) => {
   const {
     onOpenChatBot,
     botOpened,
-    onChats,
+    messages,
     register,
-    onStartChatting,
+    sendMessage,
     onAiTyping,
     messageWindowRef,
     currentBot,
     loading,
     onRealTime,
-    setOnChats,
+    setMessages,
     errors,
   } = useChatBot();
 
@@ -29,7 +29,7 @@ const AiChatBot = (props: Props) => {
       {botOpened && (
         <BotWindow
           errors={errors}
-          setChat={setOnChats}
+          setChat={setMessages}
           realtimeMode={onRealTime}
           helpdesk={currentBot?.helpdesk!}
           domainName={currentBot?.name!}
@@ -37,9 +37,9 @@ const AiChatBot = (props: Props) => {
           help={currentBot?.chatBot?.helpdesk}
           theme={currentBot?.chatBot?.background}
           textColor={currentBot?.chatBot?.textColor}
-          chats={onChats}
+          messages={messages}
           register={register}
-          onChat={onStartChatting}
+          sendMessage={sendMessage}
           onResponding={onAiTyping}
         />
       )}
