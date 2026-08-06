@@ -1,8 +1,8 @@
 import {
   onGetChatMessages,
   onGetDomainChatRooms,
-  onOwnerSendMessage,
-  onRealTimeChat,
+  saveMessageToDbAction,
+  sendMessageToPusherAction,
   onViewUnReadMessages,
 } from "@/actions/conversation";
 import { useChatContext } from "@/context/user-chat-context";
@@ -21,7 +21,11 @@ export const useConversation = () => {
     resolver: zodResolver(ConversationSearchSchema),
     mode: "onChange",
   });
-  const { setLoading: loadMessages, setChats, setChatRoom } = useChatContext();
+  const {
+    setLoading: loadMessages,
+    setChats,
+    setChatRoomId,
+  } = useChatContext();
   const [chatRooms, setChatRooms] = useState<
     {
       chatRoom: {
@@ -58,7 +62,7 @@ export const useConversation = () => {
       loadMessages(true);
       const messages = await onGetChatMessages(id);
       if (messages) {
-        setChatRoom(id);
+        setChatRoomId(id);
         loadMessages(false);
         setChats(messages[0].message);
       }
@@ -75,7 +79,7 @@ export const useConversation = () => {
 };
 
 export const useChatTime = (createdAt: Date, roomId: string) => {
-  const { chatRoom } = useChatContext();
+  const { chatRoomId } = useChatContext();
   const [messageSentAt, setMessageSentAt] = useState<string>();
   const [urgent, setUrgent] = useState<boolean>(false);
 
@@ -100,7 +104,7 @@ export const useChatTime = (createdAt: Date, roomId: string) => {
   };
 
   const onSeenChat = async () => {
-    if (chatRoom == roomId && urgent) {
+    if (chatRoomId == roomId && urgent) {
       await onViewUnReadMessages(roomId);
       setUrgent(false);
     }
@@ -108,7 +112,7 @@ export const useChatTime = (createdAt: Date, roomId: string) => {
 
   useEffect(() => {
     onSeenChat();
-  }, [chatRoom]);
+  }, [chatRoomId]);
 
   useEffect(() => {
     onSetMessageRecievedDate();
@@ -118,7 +122,7 @@ export const useChatTime = (createdAt: Date, roomId: string) => {
 };
 
 export const useChatWindow = () => {
-  const { chats, loading, setChats, chatRoom } = useChatContext();
+  const { chats, loading, setChats, chatRoomId } = useChatContext();
   const messageWindowRef = useRef<HTMLDivElement | null>(null);
   const { register, handleSubmit, reset } = useForm({
     resolver: zodResolver(ChatBotMessageSchema),
@@ -137,25 +141,25 @@ export const useChatWindow = () => {
   }, [chats, messageWindowRef]);
 
   useEffect(() => {
-    if (chatRoom) {
+    if (chatRoomId) {
       const pusherClient = getPusherClient();
-      pusherClient.subscribe(chatRoom);
+      pusherClient.subscribe(chatRoomId);
       pusherClient.bind("realtime-mode", (data: any) => {
         setChats((prev) => [...prev, data.chat]);
       });
 
       return () => {
         pusherClient.unbind("realtime-mode");
-        pusherClient.unsubscribe(chatRoom);
+        pusherClient.unsubscribe(chatRoomId);
       };
     }
-  }, [chatRoom]);
+  }, [chatRoomId]);
 
-  const onHandleSentMessage = handleSubmit(async (values) => {
+  const sendMessage = handleSubmit(async (values) => {
     try {
       reset();
-      const latestMessage = await onOwnerSendMessage(
-        chatRoom!,
+      const latestMessage = await saveMessageToDbAction(
+        chatRoomId!,
         values.content,
         "assistant",
       );
@@ -164,8 +168,8 @@ export const useChatWindow = () => {
         //remove this
         // setChats((prev) => [...prev, message.message[0]])
 
-        await onRealTimeChat(
-          chatRoom!,
+        await sendMessageToPusherAction(
+          chatRoomId!,
           latestMessage.message[0].message,
           latestMessage.message[0].id,
           "assistant",
@@ -179,9 +183,9 @@ export const useChatWindow = () => {
   return {
     messageWindowRef,
     register,
-    onHandleSentMessage,
+    sendMessage,
     chats,
     loading,
-    chatRoom,
+    chatRoomId,
   };
 };

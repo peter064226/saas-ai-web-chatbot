@@ -1,5 +1,5 @@
 import { onAiChatBotAssistant, onGetCurrentChatBot } from "@/actions/bot";
-import { postToParent } from "@/lib/utils";
+import { postToParent, extractEmailsFromString } from "@/lib/utils";
 import { getPusherClient } from "@/lib/pusher-client";
 import {
   ChatBotMessageProps,
@@ -52,10 +52,13 @@ export const useChatBot = () => {
     { role: "assistant" | "user"; content: string; link?: string }[]
   >([]);
   const [onAiTyping, setOnAiTyping] = useState<boolean>(false);
-  const [currentBotId, setCurrentBotId] = useState<string>();
+  const [domainId, setDomainId] = useState<string>();
   const [onRealTime, setOnRealTime] = useState<
     { chatroom: string; mode: boolean } | undefined
   >(undefined);
+  const [customerEmail, setCustomerEmail] = useState<string | undefined>(
+    undefined,
+  );
 
   const onScrollToBottom = () => {
     messageWindowRef.current?.scroll({
@@ -80,9 +83,9 @@ export const useChatBot = () => {
 
   let limitRequest = 0;
 
-  const onGetDomainChatBot = async (id: string) => {
-    setCurrentBotId(id);
-    const chatbot = await onGetCurrentChatBot(id);
+  const onGetDomainChatBot = async (domainId: string) => {
+    setDomainId(domainId);
+    const chatbot = await onGetCurrentChatBot(domainId);
     if (chatbot) {
       setMessages((prev) => [
         ...prev,
@@ -126,10 +129,11 @@ export const useChatBot = () => {
       console.log("🟡 RESPONSE FROM UC", uploaded.uuid);
       setOnAiTyping(true);
       const response = await onAiChatBotAssistant(
-        currentBotId!,
+        domainId!,
         messages,
         "user",
         uploaded.uuid,
+        customerEmail,
       );
 
       if (response) {
@@ -148,6 +152,13 @@ export const useChatBot = () => {
     reset();
 
     if (values.content) {
+      if (!customerEmail) {
+        const extractedEmail = extractEmailsFromString(values.content);
+        if (extractedEmail) {
+          setCustomerEmail(extractedEmail[0]);
+        }
+      }
+
       if (!onRealTime?.mode) {
         setMessages((prev: any) => [
           ...prev,
@@ -161,10 +172,11 @@ export const useChatBot = () => {
       setOnAiTyping(true);
 
       const response = await onAiChatBotAssistant(
-        currentBotId!,
+        domainId!,
         messages,
         "user",
         values.content,
+        customerEmail,
       );
 
       if (response) {
@@ -195,6 +207,8 @@ export const useChatBot = () => {
     setMessages,
     onRealTime,
     errors,
+    customerEmail,
+    setCustomerEmail,
   };
 };
 

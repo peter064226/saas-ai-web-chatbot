@@ -57,8 +57,8 @@ export const BotWindow = forwardRef<HTMLDivElement, Props>(
     {
       errors,
       register,
-      messages: chats,
-      sendMessage: onChat,
+      messages,
+      sendMessage,
       onResponding,
       domainName,
       helpdesk,
@@ -116,13 +116,13 @@ export const BotWindow = forwardRef<HTMLDivElement, Props>(
                 className="px-3 flex h-[400px] flex-col py-5 gap-3 chat-window overflow-y-auto"
                 ref={ref}
               >
-                {chats.map((chat, key) => (
+                {messages.map((chat, key) => (
                   <Bubble key={key} message={chat} />
                 ))}
                 {onResponding && <Responding />}
               </div>
               <form
-                onSubmit={onChat}
+                onSubmit={sendMessage}
                 className="flex px-3 py-1 flex-col flex-1 bg-porcelain"
               >
                 <div className="flex justify-between">

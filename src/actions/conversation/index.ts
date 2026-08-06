@@ -136,7 +136,7 @@ export const onViewUnReadMessages = async (id: string) => {
   }
 };
 
-export const onRealTimeChat = async (
+export const sendMessageToPusherAction = async (
   chatroomId: string,
   message: string,
   id: string,
@@ -151,7 +151,7 @@ export const onRealTimeChat = async (
   });
 };
 
-export const onOwnerSendMessage = async (
+export const saveMessageToDbAction = async (
   chatroom: string,
   message: string,
   role: "assistant" | "user",

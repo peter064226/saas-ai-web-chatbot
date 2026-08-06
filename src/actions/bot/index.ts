@@ -2,7 +2,10 @@
 
 import { client } from "@/lib/prisma";
 import { extractEmailsFromString, extractURLfromString } from "@/lib/utils";
-import { onRealTimeChat } from "../conversation";
+import {
+  sendMessageToPusherAction,
+  saveMessageToDbAction,
+} from "../conversation";
 import { onMailer } from "../mailer";
 import OpenAi from "openai";
 import { clerkClient } from "@clerk/nextjs/server";
@@ -13,26 +16,6 @@ const openai = new OpenAi({
 });
 
 const model = process.env.OPENAI_API_MODEL || "gpt-3.5-turbo";
-
-export const onStoreConversations = async (
-  id: string,
-  message: string,
-  role: "assistant" | "user",
-) => {
-  await client.chatRoom.update({
-    where: {
-      id,
-    },
-    data: {
-      message: {
-        create: {
-          message,
-          role,
-        },
-      },
-    },
-  });
-};
 
 export const onGetCurrentChatBot = async (id: string) => {
   try {
@@ -64,18 +47,17 @@ export const onGetCurrentChatBot = async (id: string) => {
   }
 };
 
-let customerEmail: string | undefined;
-
 export const onAiChatBotAssistant = async (
-  id: string,
-  chat: { role: "assistant" | "user"; content: string }[],
-  author: "user",
+  domainId: string,
+  messages: { role: "assistant" | "user"; content: string }[],
+  role: "user",
   message: string,
+  passedCustomerEmail?: string,
 ) => {
   try {
     const chatBotDomain = await client.domain.findUnique({
       where: {
-        id,
+        id: domainId,
       },
       select: {
         name: true,
@@ -91,14 +73,16 @@ export const onAiChatBotAssistant = async (
     });
     if (chatBotDomain) {
       const extractedEmail = extractEmailsFromString(message);
-      if (extractedEmail) {
+      let customerEmail = passedCustomerEmail;
+
+      if (extractedEmail && !customerEmail) {
         customerEmail = extractedEmail[0];
       }
 
       if (customerEmail) {
         const checkCustomer = await client.domain.findUnique({
           where: {
-            id,
+            id: domainId,
           },
           select: {
             User: {
@@ -131,7 +115,7 @@ export const onAiChatBotAssistant = async (
         if (checkCustomer && !checkCustomer.customer.length) {
           const newCustomer = await client.domain.update({
             where: {
-              id,
+              id: domainId,
             },
             data: {
               customer: {
@@ -159,17 +143,17 @@ export const onAiChatBotAssistant = async (
           }
         }
         if (checkCustomer && checkCustomer.customer[0].chatRoom[0].live) {
-          await onStoreConversations(
+          const latestMessage = await saveMessageToDbAction(
             checkCustomer?.customer[0].chatRoom[0].id!,
             message,
-            author,
+            role,
           );
 
-          onRealTimeChat(
+          sendMessageToPusherAction(
             checkCustomer.customer[0].chatRoom[0].id,
             message,
-            "user",
-            author,
+            latestMessage?.message[0].id || "",
+            role,
           );
 
           if (!checkCustomer.customer[0].chatRoom[0].mailed) {
@@ -204,10 +188,10 @@ export const onAiChatBotAssistant = async (
           };
         }
 
-        await onStoreConversations(
+        await saveMessageToDbAction(
           checkCustomer?.customer[0].chatRoom[0].id!,
           message,
-          author,
+          role,
         );
 
         const chatCompletion = await openai.chat.completions.create({
@@ -233,16 +217,16 @@ export const onAiChatBotAssistant = async (
 
               if the customer says something out of context or inapporpriate. Simply say this is beyond you and you will get a real user to continue the conversation. And add a keyword (realtime) at the end.
 
-              if the customer agrees to book an appointment send them this link http://localhost:3000/portal/${id}/appointment/${
+              if the customer agrees to book an appointment send them this link http://localhost:3000/portal/${domainId}/appointment/${
                 checkCustomer?.customer[0].id
               }
 
-              if the customer wants to buy a product redirect them to the payment page http://localhost:3000/portal/${id}/payment/${
+              if the customer wants to buy a product redirect them to the payment page http://localhost:3000/portal/${domainId}/payment/${
                 checkCustomer?.customer[0].id
               }
           `,
             },
-            ...chat,
+            ...messages,
             {
               role: "user",
               content: message,
@@ -270,7 +254,7 @@ export const onAiChatBotAssistant = async (
               ),
             };
 
-            await onStoreConversations(
+            await saveMessageToDbAction(
               checkCustomer?.customer[0].chatRoom[0].id!,
               response.content,
               "assistant",
@@ -279,7 +263,7 @@ export const onAiChatBotAssistant = async (
             return { response };
           }
         }
-        if (chat[chat.length - 1].content.includes("(complete)")) {
+        if (messages[messages.length - 1].content.includes("(complete)")) {
           const firstUnansweredQuestion =
             await client.customerResponses.findFirst({
               where: {
@@ -318,7 +302,7 @@ export const onAiChatBotAssistant = async (
               link: link.slice(0, -1),
             };
 
-            await onStoreConversations(
+            await saveMessageToDbAction(
               checkCustomer?.customer[0].chatRoom[0].id!,
               `${response.content} ${response.link}`,
               "assistant",
@@ -332,7 +316,7 @@ export const onAiChatBotAssistant = async (
             content: chatCompletion.choices[0].message.content,
           };
 
-          await onStoreConversations(
+          await saveMessageToDbAction(
             checkCustomer?.customer[0].chatRoom[0].id!,
             `${response.content}`,
             "assistant",
@@ -342,31 +326,26 @@ export const onAiChatBotAssistant = async (
         }
       }
       console.log("No customer");
-      const chatCompletion = await openai.chat.completions.create(
-        {
-          messages: [
-            {
-              role: "assistant",
-              content: `
+      const chatCompletion = await openai.chat.completions.create({
+        messages: [
+          {
+            role: "assistant",
+            content: `
             You are a highly knowledgeable and experienced sales representative for a ${chatBotDomain.name} that offers a valuable product or service. Your goal is to have a natural, human-like conversation with the customer in order to understand their needs, provide relevant information, and ultimately guide them towards making a purchase or redirect them to a link if they havent provided all relevant information.
             Right now you are talking to a customer for the first time. Start by giving them a warm welcome on behalf of ${chatBotDomain.name} and make them feel welcomed.
 
             Your next task is lead the conversation naturally to get the customers email address. Be respectful and never break character
 
           `,
-            },
-            ...chat,
-            {
-              role: "user",
-              content: message,
-            },
-          ],
-          model,
-        },
-        {
-          stream: true,
-        },
-      );
+          },
+          ...messages,
+          {
+            role: "user",
+            content: message,
+          },
+        ],
+        model,
+      });
 
       if (chatCompletion) {
         const response = {

@@ -14,8 +14,8 @@ const Messenger = (props: Props) => {
     messageWindowRef,
     chats,
     loading,
-    chatRoom,
-    onHandleSentMessage,
+    chatRoomId,
+    sendMessage,
     register,
   } = useChatWindow();
   return (
@@ -44,7 +44,7 @@ const Messenger = (props: Props) => {
         </Loader>
       </div>
       <form
-        onSubmit={onHandleSentMessage}
+        onSubmit={sendMessage}
         className="flex px-3 pt-3 pb-10 flex-col backdrop-blur-sm bg-muted w-full"
       >
         <div className="flex justify-between">
@@ -53,7 +53,7 @@ const Messenger = (props: Props) => {
             placeholder="Type your message..."
             className="focus-visible:ring-0 flex-1 p-0 focus-visible:ring-offset-0 bg-muted rounded-none outline-none border-none"
           />
-          <Button type="submit" className="mt-3 px-7" disabled={!chatRoom}>
+          <Button type="submit" className="mt-3 px-7" disabled={!chatRoomId}>
             Send
           </Button>
         </div>

@@ -16,7 +16,7 @@ const useSideBar = () => {
   const [realtime, setRealtime] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const { chatRoom } = useChatContext();
+  const { chatRoomId: chatRoom } = useChatContext();
 
   const onActivateRealtime = async (e: any) => {
     try {
