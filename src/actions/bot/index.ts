@@ -299,7 +299,7 @@ export const onAiChatBotAssistant = async (
             const response = {
               role: "assistant",
               content: `Great! you can follow the link to proceed`,
-              link: link.slice(0, -1),
+              link,
             };
 
             await saveMessageToDbAction(

@@ -36,7 +36,7 @@ export const getMonthName = (month: number) => {
 };
 
 export const extractURLfromString = (url: string) => {
-  return url.match(/https?:\/\/[^\s"<>]+/);
+  return url.match(/https?:\/\/[^\s"<>)\]]+/);
 };
 
 export const extractEmailsFromString = (text: string) => {

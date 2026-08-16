@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   // if reactCompiler set to true , reset() will act abnomal
   // reactCompiler: false,
   images: {
+    dangerouslyAllowSVG: true,
     remotePatterns: [
       {
         protocol: "https",
