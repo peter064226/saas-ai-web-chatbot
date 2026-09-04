@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ArrowBigLeftIcon, ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { getUploadcareUrl } from "@/lib/uploadcare";
 
@@ -36,18 +36,18 @@ const Modal = ({
           <DialogContent>
             <div className="flex justify-center gap-3">
               <div className="w-12 h-12 relative">
-                <Image
-                  src={getUploadcareUrl("2c9bd4ab-1f00-41df-bad2-df668f65a232")}
-                  fill
-                  alt="Xinghua"
-                />
+                <Image src={"/images/logo.svg"} fill alt="Xinghua" />
               </div>
               <div className="text-gray-400">
                 <ArrowLeft size={20} />
                 <ArrowRight size={20} />
               </div>
               <div className="w-12 h-12 relative">
-                <Image src={getUploadcareUrl(logo)} fill alt="Stripe" />
+                <Image
+                  src={logo?.startsWith("/") ? logo : getUploadcareUrl(logo)}
+                  fill
+                  alt="Stripe"
+                />
               </div>
             </div>
             <DialogHeader className="flex items-center">
