@@ -45,7 +45,7 @@ export const getUserBalance = async () => {
 
       if (connectedStripe) {
         const transactions = await stripe.balance.retrieve({
-          stripeAccount: connectedStripe.stripeId!,
+          // stripeAccount: connectedStripe.stripeId!,
         });
 
         if (transactions) {
@@ -142,7 +142,7 @@ export const getUserTransactions = async () => {
 
       if (connectedStripe) {
         const transactions = await stripe.charges.list({
-          stripeAccount: connectedStripe.stripeId!,
+          // stripeAccount: connectedStripe.stripeId!,
         });
         if (transactions) {
           return transactions;

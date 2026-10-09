@@ -1,22 +1,17 @@
-import { ZodType, z } from 'zod'
+import { z } from 'zod'
 
-type EmailMarketingProps = {
-  name: string
-}
-
-type EmailMarketingBodyProps = {
-  description: string
-}
-
-export const EmailMarketingSchema: ZodType<EmailMarketingProps> = z.object({
+export const EmailMarketingSchema = z.object({
   name: z
     .string()
     .min(3, { message: 'The campaign name must be atleast 3 characters' }),
 })
 
-export const EmailMarketingBodySchema: ZodType<EmailMarketingBodyProps> =
+export const EmailMarketingBodySchema =
   z.object({
     description: z
       .string()
       .min(30, { message: 'The body must have atleast 30 characters' }),
   })
+
+export type EmailMarketingProps = z.infer<typeof EmailMarketingBodySchema>;
+export type EmailMarketingBodyProps = z.infer<typeof EmailMarketingBodySchema>;
