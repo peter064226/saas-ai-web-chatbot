@@ -160,7 +160,7 @@ export default async function Home() {
     let dimensions = JSON.parse(e.data);
     iframe.width = dimensions.width;
     iframe.height = dimensions.height;
-    iframe.contentWindow.postMessage("1d561494-b33d-461f-ba1c-6ea1abd31b82", "http://localhost:3000/");
+    iframe.contentWindow.postMessage("ab6338ca-4919-4e0c-9047-c3419728d927", "http://localhost:3000/");
   });
 `}</Script>
     </main>
